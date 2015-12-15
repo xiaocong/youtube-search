@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 import os
 from flask import Flask, jsonify
+from cache import cache
 
 app = Flask(__name__)
+
 app.config['GOOGLE_CLIENT_KEY'] = os.environ.get("GOOGLE_CLIENT_KEY", "AIzaSyAl47M1QiibtSXtq1QbdEsVEUa-0zeW028")
+app.config['REDISCLOUD_URL'] = os.environ.get("REDISCLOUD_URL", "redis://localhost/0")
+
+cache.init_app(app)
 
 from youtube import app as youtube_app
 app.register_blueprint(youtube_app, url_prefix='/youtube')
