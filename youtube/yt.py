@@ -11,7 +11,7 @@ YOUTUBE_API_SERVICE_NAME = "youtube"
 YOUTUBE_API_VERSION = "v3"
 
 
-@cache.memoize(timeout=30)
+@cache.memoize(timeout=7200)
 def youtube_search(key, q="Google", type="video", part="id,snippet",
                    maxResults=25, channelId=None, location=None, locationRadius=None,
                    order=None, pageToken=None, publishedAfter=None, publishedBefore=None,

@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify, abort
 from datetime import datetime
 from .yt import youtube_search
+from model import GameRanking
+from cache import cache
 
 app = Blueprint('youtube', __name__)
 
@@ -56,3 +58,27 @@ def search():
         return jsonify(youtube_search(app.config["GOOGLE_CLIENT_KEY"], **kwargs))
     except:
         abort(500)
+
+
+@app.route('/countries/<country>', methods=["GET"])
+@cache.cached(timeout=3600*12)
+def games(country):
+    try:
+        r = GameRanking.objects.get(country=country)
+        games = set()
+        for k, game_list in r.rank.items():
+            for g in game_list[:4]:
+                games.add(g.get("name"))
+        items = []
+        for g in games:
+            items += youtube_search(app.config["GOOGLE_CLIENT_KEY"],
+                                    q=g,
+                                    type="video",
+                                    part="id,snippet",
+                                    maxResults=4,
+                                    order="relevance",
+                                    regionCode=r.code).get("items", [])
+        return jsonify({"result": items})
+    except Exception as e:
+        print e
+        abort(404)
