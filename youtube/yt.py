@@ -70,14 +70,15 @@ def _youtube_search(key, **kwargs):
     return youtube.search().list(**kwargs).execute()
 
 
+@cache.memoize(timeout=3600)
 def youtube_playlist(key, id, pageToken=None, maxResults=20, part="id,snippet"):
     youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
                     developerKey=key)
     kwargs = {
         "part": part,
         "maxResults": maxResults,
-        "id": id
+        "playlistId": id
     }
     if pageToken is not None:
         kwargs["pageToken"] = pageToken
-    return youtube.playlists().list(**kwargs).execute()
+    return youtube.playlistItems().list(**kwargs).execute()

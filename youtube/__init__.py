@@ -85,7 +85,6 @@ def games(country):
 
 
 @app.route('/playlist/<id>', methods=['GET'])
-@cache.cached(timeout=3600)
 def play_list(id):
     kwargs = {
         "pageToken": request.args.get("pageToken", None),
