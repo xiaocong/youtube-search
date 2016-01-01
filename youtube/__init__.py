@@ -84,7 +84,7 @@ def games(country):
         abort(404)
 
 
-@app.route('/playlist/<id>', methods=['POST'])
+@app.route('/playlist/<id>', methods=['GET'])
 @cache.cached(timeout=3600)
 def play_list(id):
     kwargs = {
